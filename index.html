@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Speak Up: Media Interaktif Sesi 4</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#fff;--fg:#1f2437;--muted:#5b6178;--card:#f3f4fb;--navy:#26306b;--coral:#e8474d;--coral-t:#fde3e4;--navy-t:#e3e6f5;--gold-t:#fdf6d3;--ok:#1e8a4c;--ok-t:#dff3e6;--bad:#c0262d;--bad-t:#fbe0e1;color-scheme:light}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141829;--fg:#eceefa;--muted:#a3a9c4;--card:#1d2340;--navy:#9fb0ff;--coral:#ff7378;--coral-t:#4a2530;--navy-t:#262d52;--gold-t:#3d3820;--ok:#6fd49a;--ok-t:#1c3a2b;--bad:#ff8a90;--bad-t:#472027;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141829;--fg:#eceefa;--muted:#a3a9c4;--card:#1d2340;--navy:#9fb0ff;--coral:#ff7378;--coral-t:#4a2530;--navy-t:#262d52;--gold-t:#3d3820;--ok:#6fd49a;--ok-t:#1c3a2b;--bad:#ff8a90;--bad-t:#472027;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Calibri,"Segoe UI",Arial,sans-serif;font-size:17px;line-height:1.5}
+main{max-width:760px;margin:0 auto;padding:16px 16px 40px}
+h1{font-family:Cambria,Georgia,serif;color:var(--navy);font-size:27px;margin:0 0 2px}
+h2{font-family:Cambria,Georgia,serif;color:var(--navy);font-size:21px;margin:0 0 8px}
+.sub{color:var(--muted);margin:0 0 12px}
+nav{display:flex;gap:6px;margin:0 0 14px;overflow-x:auto;padding-bottom:4px}
+nav button{flex:0 0 auto;padding:9px 14px;border:2px solid var(--navy);background:transparent;color:var(--navy);border-radius:999px;font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
+nav button.on{background:var(--navy);color:var(--bg)}
+nav button.done::after{content:" ✔"}
+section{display:none}section.on{display:block}
+.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:14px}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.box{border-radius:14px;padding:12px}
+.c{background:var(--coral-t)}.n{background:var(--navy-t)}.y{background:var(--gold-t)}
+.box b{display:block;color:var(--navy)}
+.box i{display:block;margin-top:6px;font-size:15px}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.steps span{background:var(--navy);color:var(--bg);padding:6px 12px;border-radius:999px;font-weight:700;font-size:15px}
+.btn{font:inherit;font-weight:700;border:0;border-radius:999px;padding:9px 16px;background:var(--coral);color:#fff;cursor:pointer;margin:2px 4px 2px 0}
+.btn.alt{background:var(--navy);color:var(--bg)}
+.chip{font:inherit;border:2px solid var(--navy-t);background:var(--bg);color:var(--fg);border-radius:12px;padding:8px 12px;margin:4px 4px 4px 0;cursor:pointer}
+.chip b{color:var(--navy)}
+.vid{aspect-ratio:16/9;background:var(--navy);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;text-align:center;padding:12px;width:100%}
+video{width:100%;border-radius:14px;background:#000}
+.ch{display:flex;justify-content:space-between;gap:8px;width:100%;text-align:left;font:inherit;color:var(--fg);background:var(--bg);border:0;border-radius:10px;padding:8px 12px;margin-bottom:6px;cursor:pointer}
+.ch span:last-child{color:var(--muted)}
+.opt{display:block;width:100%;text-align:left;font:inherit;color:var(--fg);background:var(--bg);border:2px solid var(--navy-t);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+.opt.ok{border-color:var(--ok);background:var(--ok-t)}.opt.bad{border-color:var(--bad);background:var(--bad-t)}
+.fb{font-weight:600;min-height:24px;margin:6px 0}
+.score{font-size:22px;font-weight:700;color:var(--navy)}
+.note{color:var(--muted);font-size:15px}
+button:focus-visible,input:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+<h1>Speak Up: Let’s Talk!</h1>
+<p class="sub">Media interaktif · Speaking for General Communication · Sesi 4: Discussing Life, Events, and Hypothetical Situations</p>
+<nav id="nav"></nav>
+
+<section id="s0"><div class="card">
+<h2>Selamat datang!</h2>
+<p>Ikuti urutan ini, boleh kapan saja dan diulang sesukamu:</p>
+<div class="steps"><span>1 Infografis</span><span>2 Video</span><span>3 Audio</span><span>4 Kuis</span></div>
+<p><b>Setelah belajar, kamu mampu:</b> berdiskusi tentang pengalaman hidup dan peristiwa, menyampaikan pendapat, setuju atau tidak setuju dengan sopan, serta mengungkapkan situasi hipotetis dengan kalimat kondisional (If I were…, I would…).</p>
+<p class="note">Tips: semua bagian ringan dan bisa dibuka di ponsel. Centang ✔ muncul di menu setelah kamu membuka tiap bagian.</p>
+<button class="btn" onclick="go(1)">Mulai: Infografis →</button>
+</div></section>
+
+<section id="s1"><div class="card">
+<h2>Infografis: Discussing Life, Events, and Hypothetical Situations</h2>
+<div class="g3">
+<div class="box c"><b>1 · DISCUSSING LIFE</b>Berbagi pengalaman dan kehidupan.<i>I’ve lived in Malang for five years.</i></div>
+<div class="box n"><b>2 · DISCUSSING EVENTS</b>Menyampaikan pendapat tentang peristiwa.<i>In my opinion, working from home is more flexible.</i></div>
+<div class="box c"><b>3 · HYPOTHETICAL</b>Membayangkan situasi yang tidak nyata.<i>If I won the lottery, I would travel the world.</i></div>
+</div>
+<h2 style="margin-top:14px">Ungkapan berpendapat</h2>
+<div class="steps"><span>In my opinion</span><span>I believe</span><span>I agree</span><span>I see it differently</span></div>
+<p class="note">Sampaikan alasan dengan because: <i>I agree, because it saves travel time.</i></p>
+<h2>Pola Kalimat Kondisional</h2>
+<div class="g3">
+<div class="box y"><b>Tipe 1: kondisi yang mungkin terjadi di masa depan</b>If + simple present, subject + will + V1<br>If I study hard, I will pass the exam.</div>
+<div class="box y"><b>Tipe 2: situasi hipotesis, khayalan/situasi mustahil di masa sekarang</b>If + past simple, subject + would + V1<br>If it weren't raining , I would go to library</div>
+<div class= "box n"><b>Tipe 2: memakai were</b>If I were you, I would accept the job<br></div>
+<div class="box y"><b>Tipe 3: masa lalu/penyesalan</b>If + had + V3, would have + V3<br>If I had studied, I would have passed.</div>
+</div></div></section>
+
+<section id="s2"><div class="card">
+<h2>Video: Let’s Talk!</h2>
+<div id="vbox"></div>
+</div></section>
+
+<section id="s3"><div class="card">
+<h2>Audio model: pelafalan dan intonasi</h2>
+<p class="note" id="ttsn"></p>
+<p><b>Kecepatan:</b> <button class="btn alt" id="rn">Normal</button><button class="btn alt" id="rs">Pelan</button> <span id="rl" class="note"></span></p>
+<h2 style="margin-top:12px">Kata dan bentuk singkat (ketuk untuk mendengar)</h2>
+<div id="words"></div>
+<h2 style="margin-top:12px">Intonasi kalimat</h2>
+<div id="sents"></div>
+<h2 style="margin-top:12px">Rekam dan bandingkan</h2>
+<p>Dengarkan kalimat model, lalu rekam suaramu dan putar ulang.</p>
+<button class="btn" id="rec">● Rekam</button><button class="btn alt" id="stp" disabled>■ Berhenti</button>
+<audio id="pl" controls style="width:100%;margin-top:8px;display:none"></audio>
+<p class="note" id="recn"></p>
+</div></section>
+
+<section id="s4"><div class="card" id="quiz"></div></section>
+</main>
+<script>
+var $=function(i){return document.getElementById(i)};
+var seen={},names=["Mulai","1 Infografis","2 Video","3 Audio","4 Kuis"];
+names.forEach(function(t,i){var b=document.createElement("button");b.textContent=t;b.onclick=function(){go(i)};$("nav").appendChild(b)});
+function go(n){
+  seen[n]=1;
+  [].forEach.call($("nav").children,function(b,i){b.className=(i===n?"on ":"")+(seen[i]&&i>0&&i!==n?"done":"")});
+  for(var i=0;i<5;i++){$("s"+i).className=i===n?"on":""}
+  window.scrollTo(0,0);
+}
+go(0);
+
+/* video */
+var YT="wH36TrduWF4"; /* ID video YouTube: https://youtu.be/wH36TrduWF4 */
+function loadVideo(){
+  $("vbox").innerHTML='<div class="vid" style="padding:0"><iframe id="yt" src="https://www.youtube.com/embed/'+YT+'?rel=0&playsinline=1" title="Video Let\'s Talk" style="width:100%;height:100%;border:0;border-radius:14px" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>';
+}
+loadVideo();
+
+/* audio */
+var rate=0.9,tts=false;
+try{tts=!!(window.speechSynthesis&&window.SpeechSynthesisUtterance)}catch(e){}
+if(!tts)$("ttsn").textContent="Perangkat ini tidak mendukung suara otomatis. Pada produk final, tiap tombol memutar file MP3 rekaman suara asli."; else $("ttsn").textContent="Demo: suara dibuat oleh perangkatmu. Pada produk final, tombol memutar rekaman MP3 suara model.";
+function say(t){if(!tts)return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=rate;speechSynthesis.speak(u)}catch(e){}}
+$("rn").onclick=function(){rate=0.9;$("rl").textContent="Kecepatan normal"};
+$("rs").onclick=function(){rate=0.6;$("rl").textContent="Kecepatan pelan"};
+[["I'd","= I would /aɪd/"],["wouldn't","/ˈwʊdnt/"],["could","/kʊd/ (lemah)"],["were","/wɜːr/"],["wish","/wɪʃ/"],["hypothetical","/ˌhaɪpəˈθetɪkəl/"]].forEach(function(w){
+  var b=document.createElement("button");b.className="chip";b.innerHTML="🔈 <b>"+w[0]+"</b> "+w[1];b.onclick=function(){say(w[0])};$("words").appendChild(b)});
+[["What would you do if you won the lottery?","↘ turun (pertanyaan Wh-)"],["Would you accept the job if it paid more?","↗ naik (pertanyaan ya/tidak)"],["If I had more time, I would learn another language.","↗ pada klausa if, ↘ pada klausa utama"],["I agree, but I see it a little differently.","↘ turun (pernyataan)"]].forEach(function(s){
+  var b=document.createElement("button");b.className="chip";b.style.display="block";b.style.width="100%";b.style.textAlign="left";
+  b.innerHTML="🔈 "+s[0]+"<br><span class='note'>"+s[1]+"</span>";b.onclick=function(){say(s[0])};$("sents").appendChild(b)});
+var mr=null,chunks=[];
+$("rec").onclick=function(){
+  try{navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){
+    mr=new MediaRecorder(st);chunks=[];
+    mr.ondataavailable=function(e){chunks.push(e.data)};
+    mr.onstop=function(){st.getTracks().forEach(function(t){t.stop()});var a=$("pl");a.src=URL.createObjectURL(new Blob(chunks));a.style.display="block";$("recn").textContent="Putar rekamanmu dan bandingkan dengan suara model."};
+    mr.start();$("rec").disabled=true;$("stp").disabled=false;$("recn").textContent="Merekam…";
+  }).catch(function(){$("recn").textContent="Mikrofon tidak bisa diakses. Izinkan akses mikrofon atau rekam lewat aplikasi perekam di ponsel."})}
+  catch(e){$("recn").textContent="Perekaman tidak didukung di perangkat ini. Pakai aplikasi perekam di ponsel."}
+};
+$("stp").onclick=function(){try{mr.stop()}catch(e){}$("rec").disabled=false;$("stp").disabled=true};
+
+/* quiz */
+var qs=[
+ {q:"If I ____ you, I would take the job.",o:["was","were","am"],a:1,f:"Pada kondisional tipe 2, were dipakai untuk semua subjek."},
+ {q:"If I won the lottery, I ____ travel the world.",o:["will","would","did"],a:1,f:"If + past simple, lalu would + kata kerja dasar."},
+ {q:"Ungkapan mana yang dipakai untuk menyatakan pendapat?",o:["In my opinion,","See you soon,","Thank you very much,"],a:0,f:"In my opinion dipakai untuk memulai pendapat."},
+ {q:"Dengarkan kalimat ini. Apa kepanjangan I’d di sini?",s:"If I had time, I'd travel.",o:["I had","I would","I did"],a:1,f:"Dalam kalimat kondisional, I’d = I would."},
+ {q:"Intonasi “Would you accept the job?” (pertanyaan ya/tidak) biasanya…",s:"Would you accept the job?",o:["naik ↗","turun ↘"],a:0,f:"Pertanyaan ya/tidak umumnya naik di akhir."},
+ {q:"Kalimat mana yang menyatakan tidak setuju secara sopan?",o:["I see it differently.","That’s right.","I totally agree."],a:0,f:"I see it differently menyampaikan perbedaan pendapat dengan sopan."}
+];
+var qi=0,score=0;
+function drawQ(){
+  var box=$("quiz");box.innerHTML="";
+  if(qi>=qs.length){
+    box.innerHTML='<h2>Hasil kuis</h2><p class="score">Skor: '+score+' / '+qs.length+'</p><p>'+(score>=5?"Hebat! Kamu siap berdiskusi dan berandai-andai.":"Buka lagi infografis, video, dan audio, lalu coba lagi.")+'</p>';
+    var b=document.createElement("button");b.className="btn";b.textContent="Ulangi kuis";b.onclick=function(){qi=0;score=0;drawQ()};box.appendChild(b);
+    var t=document.createElement("p");t.className="note";t.innerHTML="<br>Tugas berikutnya: tulis 5-7 kalimat berisi pendapatmu tentang satu peristiwa dan satu situasi hipotetis, rekam 1-2 menit, unggah ke E-Learning, dan tanggapi satu teman di forum.";box.appendChild(t);return;
+  }
+  var q=qs[qi];
+  var h=document.createElement("p");h.innerHTML="<b>Soal "+(qi+1)+" dari "+qs.length+"</b><br>"+q.q;box.appendChild(h);
+  if(q.s&&tts){var p=document.createElement("button");p.className="btn alt";p.textContent="🔈 Dengarkan";p.onclick=function(){say(q.s)};box.appendChild(p);box.appendChild(document.createElement("br"));box.appendChild(document.createElement("br"))}
+  var fb=document.createElement("p");fb.className="fb";
+  q.o.forEach(function(t,i){
+    var b=document.createElement("button");b.className="opt";b.textContent=t;
+    b.onclick=function(){
+      [].forEach.call(box.querySelectorAll(".opt"),function(x,j){x.disabled=true;if(j===q.a)x.classList.add("ok")});
+      if(i===q.a){score++;fb.textContent="Benar! "+q.f}else{b.classList.add("bad");fb.textContent="Belum tepat. "+q.f}
+      var nx=document.createElement("button");nx.className="btn alt";nx.textContent=qi===qs.length-1?"Lihat skor":"Lanjut";nx.onclick=function(){qi++;drawQ()};box.appendChild(nx);
+    };
+    box.appendChild(b);
+  });
+  box.appendChild(fb);
+}
+drawQ();
+</script>
+</body>
+</html>
