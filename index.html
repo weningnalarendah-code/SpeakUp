@@ -77,8 +77,47 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--coral);outline-
 <div class="box y"><b>Tipe 3: masa lalu/penyesalan</b>If + had + V3, would have + V3<br>If I had studied, I would have passed.</div>
 </div></div></section>
 
-var DEFAULT_YT="";             /* isi ID video (mis. wH36TrduWF4) kalau ingin ada video awal; kosong = layar tempel link */
-var LOCAL="video-pembelajaran-conditional-sentences";   /* file MP4 untuk offline */
+<section id="s2"><div class="card">
+<h2>Video: Let’s Talk!</h2>
+<div id="vbox"></div>
+<p class="note" id="vst"></p>
+<input id="yo" type="text" readonly style="display:none;width:100%;padding:10px 12px;margin-bottom:8px;font:inherit;color:var(--fg);background:var(--bg);border:2px solid var(--ok);border-radius:12px">
+<p><button class="btn" id="sv">⬇ Simpan untuk offline</button><button class="btn alt" id="ch">Ganti link video</button></p>
+<p class="note">Tekan <b>Simpan untuk offline</b> sekali saat ada internet. Setelah tersimpan, halaman ini dan videonya bisa dibuka tanpa internet.</p>
+</div></section>
+
+<section id="s3"><div class="card">
+<h2>Audio model: pelafalan dan intonasi</h2>
+<p class="note" id="ttsn"></p>
+<p><b>Kecepatan:</b> <button class="btn alt" id="rn">Normal</button><button class="btn alt" id="rs">Pelan</button> <span id="rl" class="note"></span></p>
+<h2 style="margin-top:12px">Kata dan bentuk singkat (ketuk untuk mendengar)</h2>
+<div id="words"></div>
+<h2 style="margin-top:12px">Intonasi kalimat</h2>
+<div id="sents"></div>
+<h2 style="margin-top:12px">Rekam dan bandingkan</h2>
+<p>Dengarkan kalimat model, lalu rekam suaramu dan putar ulang.</p>
+<button class="btn" id="rec">● Rekam</button><button class="btn alt" id="stp" disabled>■ Berhenti</button>
+<audio id="pl" controls style="width:100%;margin-top:8px;display:none"></audio>
+<p class="note" id="recn"></p>
+</div></section>
+
+<section id="s4"><div class="card" id="quiz"></div></section>
+</main>
+<script>
+var $=function(i){return document.getElementById(i)};
+var seen={},names=["Mulai","1 Infografis","2 Video","3 Audio","4 Kuis"];
+names.forEach(function(t,i){var b=document.createElement("button");b.textContent=t;b.onclick=function(){go(i)};$("nav").appendChild(b)});
+function go(n){
+  seen[n]=1;
+  [].forEach.call($("nav").children,function(b,i){b.className=(i===n?"on ":"")+(seen[i]&&i>0&&i!==n?"done":"")});
+  for(var i=0;i<5;i++){$("s"+i).className=i===n?"on":""}
+  window.scrollTo(0,0);
+}
+go(0);
+
+/* video */
+var DEFAULT_YT="wH36TrduWF4"; /* video awal: https://youtu.be/wH36TrduWF4 (kosongkan "" kalau ingin layar tempel link) */
+var LOCAL="video-pembelajaran-conditional-sentences.mp4";   /* file MP4 untuk offline */
 var CACHE="speakup-v1";        /* harus sama dengan di sw.js */
 function ytId(t){
   t=String(t).trim();
@@ -138,35 +177,6 @@ checkSaved();
 if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){
   navigator.serviceWorker.register("sw.js").catch(function(){});
 }
-<section id="s3"><div class="card">
-<h2>Audio model: pelafalan dan intonasi</h2>
-<p class="note" id="ttsn"></p>
-<p><b>Kecepatan:</b> <button class="btn alt" id="rn">Normal</button><button class="btn alt" id="rs">Pelan</button> <span id="rl" class="note"></span></p>
-<h2 style="margin-top:12px">Kata dan bentuk singkat (ketuk untuk mendengar)</h2>
-<div id="words"></div>
-<h2 style="margin-top:12px">Intonasi kalimat</h2>
-<div id="sents"></div>
-<h2 style="margin-top:12px">Rekam dan bandingkan</h2>
-<p>Dengarkan kalimat model, lalu rekam suaramu dan putar ulang.</p>
-<button class="btn" id="rec">● Rekam</button><button class="btn alt" id="stp" disabled>■ Berhenti</button>
-<audio id="pl" controls style="width:100%;margin-top:8px;display:none"></audio>
-<p class="note" id="recn"></p>
-</div></section>
-
-<section id="s4"><div class="card" id="quiz"></div></section>
-</main>
-<script>
-var $=function(i){return document.getElementById(i)};
-var seen={},names=["Mulai","1 Infografis","2 Video","3 Audio","4 Kuis"];
-names.forEach(function(t,i){var b=document.createElement("button");b.textContent=t;b.onclick=function(){go(i)};$("nav").appendChild(b)});
-function go(n){
-  seen[n]=1;
-  [].forEach.call($("nav").children,function(b,i){b.className=(i===n?"on ":"")+(seen[i]&&i>0&&i!==n?"done":"")});
-  for(var i=0;i<5;i++){$("s"+i).className=i===n?"on":""}
-  window.scrollTo(0,0);
-}
-go(0);
-
 
 /* audio */
 var rate=0.9,tts=false;
