@@ -77,12 +77,67 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--coral);outline-
 <div class="box y"><b>Tipe 3: masa lalu/penyesalan</b>If + had + V3, would have + V3<br>If I had studied, I would have passed.</div>
 </div></div></section>
 
-<section id="s2"><div class="card">
-<h2>Video: Let’s Talk!</h2>
-<div id="vbox"></div>
-<p><a class="btn" id="dl" href="video-pembelajaran-conditional-sentences.mp4" download="Lets-Talk-Sesi4.mp4" style="display:inline-block;text-decoration:none">⬇ Unduh video (untuk offline)</a></p>
-<p class="note">Unduh sekali saat ada internet. Setelah itu, putar file-nya lewat aplikasi Galeri atau Files di perangkatmu tanpa internet.</p>
-</div></section>
+var DEFAULT_YT="wH36TrduWF4"; /* video awal: https://youtu.be/wH36TrduWF4 (kosongkan "" kalau ingin layar tempel link) */
+var LOCAL="video-pembelajaran-conditional-sentences.mp4";   /* file MP4 untuk offline */
+var CACHE="speakup-v1";        /* harus sama dengan di sw.js */
+function ytId(t){
+  t=String(t).trim();
+  var m=t.match(/(?:youtu\.be\/|v=|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{11})/);
+  if(m)return m[1];
+  return /^[A-Za-z0-9_-]{11}$/.test(t)?t:"";
+}
+var qv=(location.search.match(/[?&]v=([A-Za-z0-9_-]{11})/)||[])[1];
+var sv_="";try{sv_=localStorage.getItem("yt_id")||""}catch(e){}
+var YT=qv||sv_||DEFAULT_YT;
+ 
+function pasteScreen(){
+  $("vbox").innerHTML='<div class="vid" style="background:var(--navy-t);color:var(--fg);flex-direction:column;gap:8px;overflow:auto">'
+   +'<div style="font-size:34px;line-height:1">▶</div>'
+   +'<div><b>Tempel link YouTube di sini</b></div>'
+   +'<input id="yl" type="text" inputmode="url" placeholder="https://youtu.be/..." style="width:100%;max-width:420px;padding:10px 12px;font:inherit;color:var(--fg);background:var(--bg);border:2px solid var(--navy);border-radius:12px">'
+   +'<button class="btn" id="yg">Tampilkan video</button>'
+   +'<div id="ym" style="font-size:15px"></div></div>';
+  $("yg").onclick=useLink;
+  $("yl").onkeydown=function(e){if(e.key==="Enter")useLink()};
+}
+function useLink(){
+  var id=ytId($("yl").value);
+  if(!id){$("ym").textContent="Link tidak dikenali. Salin ulang dari tombol Bagikan di YouTube.";return}
+  if(!navigator.onLine){$("ym").textContent="Kamu sedang offline. Sambungkan internet dulu.";return}
+  YT=id;
+  try{localStorage.setItem("yt_id",id)}catch(e){}
+  playYT();
+  $("yo").value=location.origin+location.pathname+"?v="+id;
+  $("yo").style.display="block";
+  $("vst").textContent="Salin tautan hijau di bawah untuk dibagikan ke siswa agar mereka melihat video yang sama.";
+}
+function playYT(){
+  $("vbox").innerHTML='<div class="vid" style="padding:0"><iframe id="yt" src="https://www.youtube.com/embed/'+YT+'?rel=0&playsinline=1" title="Video Let\'s Talk" style="width:100%;height:100%;border:0;border-radius:14px" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>';
+}
+function playLocal(){
+  $("vbox").innerHTML='<video id="vv" controls playsinline preload="metadata" src="'+LOCAL+'"></video>';
+  $("vv").onerror=function(){$("vst").textContent="Video offline belum tersimpan. Hubungkan internet, lalu tekan Simpan untuk offline."};
+}
+function saved(){$("vst").textContent="✔ Video sudah tersimpan. Bisa diputar tanpa internet."}
+function checkSaved(){
+  try{if(window.caches)caches.open(CACHE).then(function(c){return c.match(LOCAL)}).then(function(r){if(r)saved()})}catch(e){}
+}
+$("sv").onclick=function(){
+  if(!(window.caches&&"serviceWorker" in navigator)||location.protocol.indexOf("http")!==0){
+    $("vst").textContent="Fitur ini butuh tautan https (GitHub Pages).";return}
+  if(!navigator.onLine){$("vst").textContent="Kamu sedang offline. Sambungkan internet dulu.";return}
+  $("vst").textContent="Menyimpan… tunggu sampai selesai.";
+  caches.open(CACHE).then(function(c){return c.add(LOCAL)}).then(saved).catch(function(){
+    $("vst").textContent="Gagal menyimpan. Pastikan internet aktif dan file video-sesi4.mp4 sudah diunggah."});
+};
+$("ch").onclick=function(){$("yo").style.display="none";$("vst").textContent="";if(navigator.onLine)pasteScreen();else playLocal()};
+ 
+if(!navigator.onLine)playLocal();else if(YT)playYT();else pasteScreen();
+window.addEventListener("offline",playLocal);
+checkSaved();
+if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){
+  navigator.serviceWorker.register("sw.js").catch(function(){});
+}
 
 <section id="s3"><div class="card">
 <h2>Audio model: pelafalan dan intonasi</h2>
