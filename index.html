@@ -81,9 +81,8 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--coral);outline-
 <h2>Video: Let’s Talk!</h2>
 <div id="vbox"></div>
 <p class="note" id="vst"></p>
-<input id="yo" type="text" readonly style="display:none;width:100%;padding:10px 12px;margin-bottom:8px;font:inherit;color:var(--fg);background:var(--bg);border:2px solid var(--ok);border-radius:12px">
-<p><button class="btn" id="sv">⬇ Simpan untuk offline</button><button class="btn alt" id="ch">Ganti link video</button></p>
-<p class="note">Tekan <b>Simpan untuk offline</b> sekali saat ada internet. Setelah tersimpan, halaman ini dan videonya bisa dibuka tanpa internet.</p>
+<p><button class="btn alt" id="ch">Ganti video</button></p>
+<p class="note">Pilih file video MP4 dari perangkatmu satu kali saja. Video otomatis tersimpan di browser, jadi bisa diputar lagi tanpa internet.</p>
 </div></section>
 
 <section id="s3"><div class="card">
@@ -116,64 +115,47 @@ function go(n){
 go(0);
 
 /* video */
-var DEFAULT_YT="wH36TrduWF4"; /* video awal: https://youtu.be/wH36TrduWF4 (kosongkan "" kalau ingin layar tempel link) */
-var LOCAL="video-pembelajaran-conditional-sentences.mp4";   /* file MP4 untuk offline */
-var CACHE="speakup-v1";        /* harus sama dengan di sw.js */
-function ytId(t){
-  t=String(t).trim();
-  var m=t.match(/(?:youtu\.be\/|v=|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{11})/);
-  if(m)return m[1];
-  return /^[A-Za-z0-9_-]{11}$/.test(t)?t:"";
+var CACHE="speakup-v1";   /* harus sama dengan di sw.js */
+var KEY="saved-video";    /* nama penyimpanan video di browser */
+var objUrl="";
+function setMsg(t){$("vst").textContent=t}
+function canCache(){return !!window.caches&&location.protocol.indexOf("http")===0}
+function playFile(blob){
+  if(objUrl){try{URL.revokeObjectURL(objUrl)}catch(e){}}
+  objUrl=URL.createObjectURL(blob);
+  $("vbox").innerHTML='<video id="vv" controls playsinline preload="metadata"></video>';
+  $("vv").src=objUrl;
 }
-var qv=(location.search.match(/[?&]v=([A-Za-z0-9_-]{11})/)||[])[1];
-var sv_="";try{sv_=localStorage.getItem("yt_id")||""}catch(e){}
-var YT=qv||sv_||DEFAULT_YT;
-
-function pasteScreen(){
+function pickScreen(){
   $("vbox").innerHTML='<div class="vid" style="background:var(--navy-t);color:var(--fg);flex-direction:column;gap:8px;overflow:auto">'
    +'<div style="font-size:34px;line-height:1">▶</div>'
-   +'<div><b>Tempel link YouTube di sini</b></div>'
-   +'<input id="yl" type="text" inputmode="url" placeholder="https://youtu.be/..." style="width:100%;max-width:420px;padding:10px 12px;font:inherit;color:var(--fg);background:var(--bg);border:2px solid var(--navy);border-radius:12px">'
-   +'<button class="btn" id="yg">Tampilkan video</button>'
-   +'<div id="ym" style="font-size:15px"></div></div>';
-  $("yg").onclick=useLink;
-  $("yl").onkeydown=function(e){if(e.key==="Enter")useLink()};
+   +'<div><b>Pilih file video (MP4) dari perangkatmu</b></div>'
+   +'<label class="btn" style="display:inline-block;margin:0">Pilih file video<input type="file" id="vf" accept="video/*" style="display:none"></label>'
+   +'</div>';
+  $("vf").onchange=function(e){
+    var f=e.target.files[0];if(!f)return;
+    playFile(f);
+    saveFile(f);
+  };
 }
-function useLink(){
-  var id=ytId($("yl").value);
-  if(!id){$("ym").textContent="Link tidak dikenali. Salin ulang dari tombol Bagikan di YouTube.";return}
-  if(!navigator.onLine){$("ym").textContent="Kamu sedang offline. Sambungkan internet dulu.";return}
-  YT=id;
-  try{localStorage.setItem("yt_id",id)}catch(e){}
-  playYT();
-  $("yo").value=location.origin+location.pathname+"?v="+id;
-  $("yo").style.display="block";
-  $("vst").textContent="Salin tautan hijau di bawah untuk dibagikan ke siswa agar mereka melihat video yang sama.";
+function saveFile(f){
+  if(!canCache()){setMsg("Video diputar, tetapi tidak bisa disimpan untuk offline di sini. Buka lewat tautan https.");return}
+  setMsg("Menyimpan untuk offline… tunggu sampai selesai.");
+  caches.open(CACHE)
+   .then(function(c){return c.put(KEY,new Response(f,{headers:{"Content-Type":f.type||"video/mp4"}}))})
+   .then(function(){setMsg("✔ Video tersimpan. Bisa diputar tanpa internet.")})
+   .catch(function(){setMsg("Video diputar, tetapi gagal disimpan (penyimpanan perangkat mungkin penuh).")});
 }
-function playYT(){
-  $("vbox").innerHTML='<div class="vid" style="padding:0"><iframe id="yt" src="https://www.youtube.com/embed/'+YT+'?rel=0&playsinline=1" title="Video Let\'s Talk" style="width:100%;height:100%;border:0;border-radius:14px" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>';
+function loadSaved(){
+  if(!canCache()){pickScreen();return}
+  caches.open(CACHE)
+   .then(function(c){return c.match(KEY)})
+   .then(function(r){return r?r.blob():null})
+   .then(function(b){if(b){playFile(b);setMsg("✔ Video tersimpan. Bisa diputar tanpa internet.")}else pickScreen()})
+   .catch(function(){pickScreen()});
 }
-function playLocal(){
-  $("vbox").innerHTML='<video id="vv" controls playsinline preload="metadata" src="'+LOCAL+'"></video>';
-  $("vv").onerror=function(){$("vst").textContent="Video offline belum tersimpan. Hubungkan internet, lalu tekan Simpan untuk offline."};
-}
-function saved(){$("vst").textContent="✔ Video sudah tersimpan. Bisa diputar tanpa internet."}
-function checkSaved(){
-  try{if(window.caches)caches.open(CACHE).then(function(c){return c.match(LOCAL)}).then(function(r){if(r)saved()})}catch(e){}
-}
-$("sv").onclick=function(){
-  if(!(window.caches&&"serviceWorker" in navigator)||location.protocol.indexOf("http")!==0){
-    $("vst").textContent="Fitur ini butuh tautan https (GitHub Pages).";return}
-  if(!navigator.onLine){$("vst").textContent="Kamu sedang offline. Sambungkan internet dulu.";return}
-  $("vst").textContent="Menyimpan… tunggu sampai selesai.";
-  caches.open(CACHE).then(function(c){return c.add(LOCAL)}).then(saved).catch(function(){
-    $("vst").textContent="Gagal menyimpan. Pastikan internet aktif dan file video-sesi4.mp4 sudah diunggah."});
-};
-$("ch").onclick=function(){$("yo").style.display="none";$("vst").textContent="";if(navigator.onLine)pasteScreen();else playLocal()};
-
-if(!navigator.onLine)playLocal();else if(YT)playYT();else pasteScreen();
-window.addEventListener("offline",playLocal);
-checkSaved();
+$("ch").onclick=function(){setMsg("");pickScreen()};
+loadSaved();
 if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){
   navigator.serviceWorker.register("sw.js").catch(function(){});
 }
