@@ -81,8 +81,8 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--coral);outline-
 <h2>Video: Let’s Talk!</h2>
 <div id="vbox"></div>
 <p class="note" id="vst"></p>
-<p><button class="btn alt" id="ch">Ganti video</button></p>
-<p class="note">Pilih file video MP4 dari perangkatmu satu kali saja. Video otomatis tersimpan di browser, jadi bisa diputar lagi tanpa internet.</p>
+<p><button class="btn" id="sv">⬇ Simpan untuk offline</button><button class="btn alt" id="ch">Ganti video</button></p>
+<p class="note">Tekan <b>Simpan untuk offline</b> sekali saat ada internet. Setelah tersimpan, video bisa diputar tanpa internet. Tombol <b>Ganti video</b> dipakai kalau ingin memutar file video lain dari perangkatmu.</p>
 </div></section>
 
 <section id="s3"><div class="card">
@@ -115,47 +115,78 @@ function go(n){
 go(0);
 
 /* video */
-var CACHE="speakup-v1";   /* harus sama dengan di sw.js */
-var KEY="saved-video";    /* nama penyimpanan video di browser */
-var objUrl="";
+var DEFAULT_MP4="video-pembelajaran-conditional-sentences.mp4"; /* file video pembelajaran di GitHub */
+var CACHE="speakup-v1";          /* harus sama dengan di sw.js */
+var K_DEF="saved-default-video"; /* video pembelajaran yang disimpan offline */
+var K_CUS="saved-video";         /* video pilihan sendiri yang disimpan offline */
+var objUrl="",mode="";
 function setMsg(t){$("vst").textContent=t}
 function canCache(){return !!window.caches&&location.protocol.indexOf("http")===0}
+function cget(k){return caches.open(CACHE).then(function(c){return c.match(k)})}
 function playFile(blob){
   if(objUrl){try{URL.revokeObjectURL(objUrl)}catch(e){}}
   objUrl=URL.createObjectURL(blob);
   $("vbox").innerHTML='<video id="vv" controls playsinline preload="metadata"></video>';
   $("vv").src=objUrl;
 }
+function playRemote(){
+  mode="remote";
+  $("vbox").innerHTML='<video id="vv" controls playsinline preload="metadata" src="'+DEFAULT_MP4+'"></video>';
+  $("vv").onerror=function(){setMsg("Video tidak bisa dimuat. Periksa internet atau nama file video di GitHub.")};
+}
 function pickScreen(){
+  mode="pick";
   $("vbox").innerHTML='<div class="vid" style="background:var(--navy-t);color:var(--fg);flex-direction:column;gap:8px;overflow:auto">'
    +'<div style="font-size:34px;line-height:1">▶</div>'
    +'<div><b>Pilih file video (MP4) dari perangkatmu</b></div>'
    +'<label class="btn" style="display:inline-block;margin:0">Pilih file video<input type="file" id="vf" accept="video/*" style="display:none"></label>'
+   +'<button class="btn alt" id="vd" style="margin:0">Pakai video pembelajaran</button>'
    +'</div>';
   $("vf").onchange=function(e){
     var f=e.target.files[0];if(!f)return;
-    playFile(f);
-    saveFile(f);
+    mode="custom";playFile(f);saveCustom(f);
+  };
+  $("vd").onclick=function(){
+    if(!canCache()){init();return}
+    caches.open(CACHE).then(function(c){return c.delete(K_CUS)}).then(init).catch(init);
   };
 }
-function saveFile(f){
+function saveCustom(f){
   if(!canCache()){setMsg("Video diputar, tetapi tidak bisa disimpan untuk offline di sini. Buka lewat tautan https.");return}
   setMsg("Menyimpan untuk offline… tunggu sampai selesai.");
   caches.open(CACHE)
-   .then(function(c){return c.put(KEY,new Response(f,{headers:{"Content-Type":f.type||"video/mp4"}}))})
-   .then(function(){setMsg("✔ Video tersimpan. Bisa diputar tanpa internet.")})
+   .then(function(c){return c.put(K_CUS,new Response(f,{headers:{"Content-Type":f.type||"video/mp4"}}))})
+   .then(function(){setMsg("✔ Video pilihanmu tersimpan. Bisa diputar tanpa internet.")})
    .catch(function(){setMsg("Video diputar, tetapi gagal disimpan (penyimpanan perangkat mungkin penuh).")});
 }
-function loadSaved(){
-  if(!canCache()){pickScreen();return}
-  caches.open(CACHE)
-   .then(function(c){return c.match(KEY)})
-   .then(function(r){return r?r.blob():null})
-   .then(function(b){if(b){playFile(b);setMsg("✔ Video tersimpan. Bisa diputar tanpa internet.")}else pickScreen()})
-   .catch(function(){pickScreen()});
+function init(){
+  setMsg("");
+  var fallback=function(){if(navigator.onLine)playRemote();else{pickScreen();setMsg("Video belum tersimpan di perangkat ini. Hubungkan internet atau pilih file video sendiri.")}};
+  if(!canCache()){fallback();return}
+  cget(K_CUS).then(function(r){
+    if(r)return r.blob().then(function(b){mode="custom";playFile(b);setMsg("✔ Video pilihanmu tersimpan. Bisa diputar tanpa internet.")});
+    return cget(K_DEF).then(function(r2){
+      if(r2)return r2.blob().then(function(b){mode="saved";playFile(b);setMsg("✔ Video pembelajaran tersimpan. Bisa diputar tanpa internet.")});
+      fallback();
+    });
+  }).catch(fallback);
 }
+$("sv").onclick=function(){
+  if(!canCache()){setMsg("Fitur ini butuh tautan https (GitHub Pages).");return}
+  if(mode==="custom"){setMsg("Video pilihanmu sudah otomatis tersimpan. Tekan Ganti video lalu Pakai video pembelajaran kalau ingin menyimpan video pembelajaran.");return}
+  if(mode==="saved"){setMsg("✔ Video pembelajaran sudah tersimpan.");return}
+  if(!navigator.onLine){setMsg("Kamu sedang offline. Sambungkan internet dulu.");return}
+  var wasPick=(mode==="pick");
+  setMsg("Menyimpan… tunggu sampai selesai dan jangan tutup halaman.");
+  fetch(DEFAULT_MP4).then(function(r){
+    if(!r.ok)throw new Error("x");
+    return caches.open(CACHE).then(function(c){return c.put(K_DEF,r)});
+  }).then(function(){
+    if(wasPick)init();else{mode="saved";setMsg("✔ Video pembelajaran tersimpan. Bisa diputar tanpa internet.")}
+  }).catch(function(){setMsg("Gagal menyimpan. Pastikan internet aktif dan nama file video di GitHub sudah benar.")});
+};
 $("ch").onclick=function(){setMsg("");pickScreen()};
-loadSaved();
+init();
 if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){
   navigator.serviceWorker.register("sw.js").catch(function(){});
 }
